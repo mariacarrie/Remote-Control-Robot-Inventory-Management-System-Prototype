@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Login/Register</title>
+    <link rel="stylesheet" href="./CSS/common.css">
+</head>
+<body>
+  <div class="container">
+      <h2>User Login</h2>
+      <form id="loginForm">
+          <div>
+              <label for="email">Email:</label>
+              <input type="email" id="email" name="email" required>
+          </div>
+          <div>
+              <label for="password">Password:</label>
+              <input type="password" id="password" name="password" required>
+          </div>
+          <button type="submit" class="button">Login</button>
+      </form>
+    
+      <a href="register.html" class="button">Register</a>
+      <a href="other-login.html" class="button">Other Login Methods</a>
+    
+  </div>
+  
+  <script>
+    document.getElementById('loginForm').onsubmit = function(event) {
+        event.preventDefault();
+        var formData = new FormData(document.getElementById('loginForm'));
+        fetch('/app/login', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // alert("Login successful")
+                window.location.href = "home.html"; 
+            } else {
+                alert("Login failed: " + data.message); 
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    };
+  </script>
+</body>
+</html>

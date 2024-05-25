@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Product Display Platform</title>
+    <link rel="stylesheet" href="./CSS/common.css">
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <ul id="navbar">
+            <li><a href="javascript:void(0);" onclick="showTab('home')">Home</a></li>
+            <li><a href="javascript:void(0);" onclick="showTab('products')">Products</a></li>
+            <li><a href="javascript:void(0);" onclick="showTab('contact')">Control Panel</a></li>
+        </ul>
+    </nav>
+
+    <!-- Home Tab -->
+    <div id="home" class="tab">
+        <h1>Welcome to the Product Display Platform</h1>
+        <p>Here is some introductory content...</p>
+    </div>
+
+    <!-- Products Tab -->
+    <div id="products" class="tab" style="display:none">
+        <h1>Our Products</h1>
+        <div class="product-container">
+            <div class="product">
+                <img src="./Resource/coconut_water.png" alt="Product Image">
+                <p class="description">Coconut Water<br>Stock: 10</p>
+            </div>
+            <div class="product">
+                <img src="./Resource/chocolate_biscuit.png" alt="Product Image">
+                <p class="description">Chocolate Biscuit<br>Stock: 10</p>
+            </div>
+            <div class="product">
+                <img src="./Resource/dishwashing_liquid.png" alt="Product Image">
+                <p class="description">Dishwashing Liquid<br>Stock: 9</p>
+            </div>
+            <div class="product">
+                <img src="./Resource/rexona_men.png" alt="Product Image">
+                <p class="description">Rexona Men<br>Stock: 50</p>
+            </div>
+            <div class="product">
+                <img src="./Resource/sodastream_pepsi.png" alt="Product Image">
+                <p class="description">Sodastream Pepsi<br>Stock: 30</p>
+            </div>
+            <div class="product">
+                <img src="./Resource/sweet_popcorn.png" alt="Product Image">
+                <p class="description">Sweet Popcorn<br>Stock: 23</p>
+            </div>
+            <div class="product">
+                <img src="./Resource/swisse_iron.png" alt="Product Image">
+                <p class="description">Swisse Iron<br>Stock: 8</p>
+            </div>
+            <div class="product">
+                <img src="./Resource/vittoria_coffee.png" alt="Product Image">
+                <p class="description">Vittoria Coffee<br>Stock: 3</p>
+            </div>
+        </div>
+        <div class="pagination">
+            <button onclick="previousPage()">Previous Page</button>
+            <button onclick="nextPage()">Next Page</button>
+        </div>
+    </div>
+
+    <!-- Contact Tab -->
+    <div id="contact" class="tab" style="display:none">
+        <h1>Control Panel</h1>
+        <!-- Control Panel Buttons -->
+        <div class="operation-controls">
+            <button class="control-button" id="up">Up</button>
+            <button class="control-button" id="left">Left</button>
+            <img src="./Resource/robot_control.png" alt="Control Image" class="operation-image" width="600" height="400">
+            <button class="control-button" id="right">Right</button>
+            <button class="control-button" id="down">Down</button>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            showTab('home');  // Display the Home tab
+            updateStockColors();  // Update the stock colors
+        };
+
+        function updateStockColors() {
+            var products = document.querySelectorAll('.product .description');
+            products.forEach(function(product) {
+                var stockText = product.innerHTML; // Get the stock amount from the description
+                var stockNumber = parseInt(stockText.split(':')[1].trim()); // Extract the number
+                if (stockNumber < 10) {
+                    product.style.color = 'red'; // If stock is below 10, set the text color to red
+                }
+            });
+        }
+
+        function showTab(tabName) {
+            var tabs = document.getElementsByClassName('tab');
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].style.display = 'none';
+            }
+            document.getElementById(tabName).style.display = 'block';
+        }
+
+        function sendControlCommand(command) {
+            fetch('http://localhost:5001/app/send_command', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ command: command })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log("Command sent successfully");
+                } else {
+                    console.error("Failed to send command");
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        // Bind button click events
+        document.getElementById('up').onclick = function() { sendControlCommand('up'); };
+        document.getElementById('down').onclick = function() { sendControlCommand('down'); };
+        document.getElementById('left').onclick = function() { sendControlCommand('left'); };
+        document.getElementById('right').onclick = function() { sendControlCommand('right'); };
+    </script>
+
+</body>
+
+</html>

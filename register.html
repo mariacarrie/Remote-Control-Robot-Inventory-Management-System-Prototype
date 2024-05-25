@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register New User</title>
+    <link rel="stylesheet" href="./CSS/common.css">
+</head>
+<body>
+    <h2>Register New User</h2>
+    <!-- Registration Form -->
+    <form id="registerForm" method="post">
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required placeholder="Please enter a valid email address">
+        </div>
+        <div>
+            <label for="password">Password (at least 8 characters):</label>
+            <input type="password" id="password" name="password" required minlength="8" placeholder="Please enter a password, at least 8 characters">
+        </div>
+        <div>
+            <label for="confirm_password">Confirm Password:</label>
+            <input type="password" id="confirm_password" name="confirm_password" required minlength="8" placeholder="Please re-enter your password">
+        </div>
+        <div>
+            <button type="submit">Register</button>
+        </div>
+    </form>
+
+    <script>
+        document.getElementById('registerForm').onsubmit = function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+            var confirmPassword = document.getElementById('confirm_password').value;
+
+            // Front-end validation
+            if (password !== confirmPassword) {
+                alert('The passwords do not match.');
+                return;
+            }
+
+            var formData = new FormData(document.getElementById('registerForm'));
+
+            fetch('/app/register', { 
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = "index.html"; 
+                } else {
+                    alert("Registration failed: " + data.message); 
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        };
+    </script>
+
+</body>
+</html>
